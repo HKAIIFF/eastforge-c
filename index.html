@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EastForge 東方護身符 - AI優化護身符</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Orbitron:wght@700;800&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 所有CSS样式保持不变 */
+        :root {
+            --primary: #B91C1C;
+            --secondary: #F59E0B;
+            --accent: #7C3AED;
+            --gold: #FFD700;
+            --mystic-purple: #6B46C1;
+            --cosmic-blue: #3B82F6;
+            --ancient-bronze: #CD7F32;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(185, 28, 28, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.1) 0%, transparent 30%);
+        }
+        
+        .logo-font {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 20px rgba(185, 28, 28, 0.4);
+        }
+        
+        .logo-sub {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: var(--secondary);
+            margin-top: -5px;
+            text-align: center;
+            opacity: 0.9;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .mystic-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+        }
+        
+        .card {
+            background-color: rgba(26, 32, 44, 0.7);
+            border: 1px solid rgba(185, 28, 28, 0.2);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            transition: all 0.4s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(185, 28, 28, 0.3);
+            border-color: rgba(185, 28, 28, 0.5);
+        }
+        
+        .navbar {
+            background-color: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(185, 28, 28, 0.2);
+            transition: all 0.3s ease;
+            height: 80px;
+            z-index: 1000;
+        }
+        
+        .navbar.scrolled {
+            background-color: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            height: 70px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transition: all 0.3s ease;
+            border: none;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(185, 28, 28, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(185, 28, 28, 0.1);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(185, 28, 28, 0.3);
+        }
+        
+        .hero {
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 100px;
+        }
+        
+        .hero:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.8) 100%);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.4;
+            z-index: 0;
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(185, 28, 28, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        .stats-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+            font-family: 'Noto Sans SC', sans-serif;
+            font-weight: 700;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .section-title.center:after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .talisman-showcase {
+            background: linear-gradient(135deg, rgba(185, 28, 28, 0.05), rgba(245, 158, 11, 0.05));
+            border-radius: 25px;
+            padding: 40px;
+            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .talisman-showcase:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .cultural-symbol {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.5;
+            color: var(--secondary);
+            text-shadow: 0 0 12px rgba(245, 158, 11, 0.7), 0 0 25px rgba(185, 28, 28, 0.3);
+            animation: symbolFloat 15s infinite linear;
+            z-index: 1;
+            font-weight: bold;
+            pointer-events: none;
+        }
+        
+        @keyframes symbolFloat {
+            0% { 
+                transform: translateY(100vh) rotate(0deg); 
+                opacity: 0.25;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% { 
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .talisman-card {
+            background: rgba(26, 32, 44, 0.8);
+            border: 2px solid rgba(185, 28, 28, 0.3);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .talisman-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--secondary);
+            box-shadow: 0 25px 50px rgba(245, 158, 11, 0.3);
+        }
+        
+        .talisman-image {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .culture-section {
+            background: linear-gradient(135deg, rgba(26, 32, 44, 0.9), rgba(0, 0, 0, 0.7));
+            border-radius: 25px;
+            padding: 60px 40px;
+            margin: 60px 0;
+            position: relative;
+            border: 1px solid rgba(185, 28, 28, 0.2);
+        }
+        
+        .advantage-card {
+            background: rgba(26, 32, 44, 0.6);
+            border: 1px solid rgba(185, 28, 28, 0.2);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+            position: relative;
+            height: 100%;
+        }
+        
+        .advantage-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(185, 28, 28, 0.25);
+        }
+        
+        .urgency-banner {
+            background: linear-gradient(90deg, #b91c1c, #d97706, #b91c1c);
+            background-size: 200% 100%;
+            animation: gradientFlow 3s linear infinite;
+        }
+        
+        @keyframes gradientFlow {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+        
+        .testimonial-card {
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            box-shadow: 0 15px 35px rgba(185, 28, 28, 0.4);
+        }
+        
+        /* Login Modal */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-content {
+            background: rgba(26, 32, 44, 0.95);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            position: relative;
+            border: 2px solid var(--secondary);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--secondary);
+        }
+        
+        .social-login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .social-login-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .crypto-wallet {
+            background: #1a1a1a;
+            border: 1px solid #444;
+        }
+        
+        .crypto-wallet:hover {
+            background: #222;
+        }
+        
+        /* Chat Simulation */
+        .chat-container {
+            background: rgba(26, 32, 44, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+            border: 1px solid rgba(185, 28, 28, 0.2);
+        }
+        
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.5);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 80%;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .bot-message {
+            background: rgba(185, 28, 28, 0.3);
+            border: 1px solid rgba(185, 28, 28, 0.5);
+            align-self: flex-start;
+            margin-right: auto;
+        }
+        
+        .user-message {
+            background: rgba(245, 158, 11, 0.3);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 30px;
+            background: rgba(10, 10, 10, 0.5);
+            border: 1px solid rgba(185, 28, 28, 0.3);
+            color: white;
+        }
+        
+        .chat-input button {
+            padding: 12px 25px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+        
+        .language-btn {
+            background: rgba(26, 32, 44, 0.7);
+            border: 1px solid rgba(185, 28, 28, 0.3);
+            color: var(--secondary);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            padding: 80px 20px 20px;
+            overflow-y: auto;
+        }
+        
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        
+        .mobile-menu a {
+            display: block;
+            padding: 15px;
+            border-bottom: 1px solid rgba(185, 28, 28, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .mobile-menu a:hover {
+            color: var(--secondary);
+            background: rgba(185, 28, 28, 0.1);
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 30px;
+            background: rgba(26, 32, 44, 0.7);
+            border: 1px solid rgba(185, 28, 28, 0.3);
+            color: var(--secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .hero-content {
+                padding-top: 20px;
+            }
+            
+            .stats-number {
+                font-size: 2.2rem;
+            }
+            
+            .talisman-image {
+                width: 160px;
+                height: 160px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .logo-font {
+                font-size: 1.8rem;
+            }
+            
+            .logo-sub {
+                font-size: 0.7rem;
+            }
+            
+            .cultural-symbol {
+                font-size: 1.5rem;
+                opacity: 0.25;
+            }
+            
+            .talisman-image {
+                width: 130px;
+                height: 130px;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+                line-height: 1.2;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .btn-primary, .btn-secondary {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .desktop-nav {
+                display: none;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .hero {
+                padding-top: 120px;
+            }
+            
+            .navbar {
+                height: 70px;
+            }
+            
+            .navbar.scrolled {
+                height: 60px;
+            }
+            
+            .chat-container {
+                padding: 20px;
+            }
+            
+            .chat-messages {
+                height: 300px;
+            }
+            
+            .talisman-showcase {
+                padding: 20px;
+            }
+            
+            .culture-section {
+                padding: 40px 20px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .language-selector {
+                top: 15px;
+                right: 15px;
+            }
+            
+            .language-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stats-number {
+                font-size: 1.8rem;
+            }
+            
+            .hero {
+                padding-top: 90px;
+            }
+            
+            .mobile-menu {
+                width: 100%;
+            }
+            
+            .talisman-image {
+                width: 110px;
+                height: 110px;
+            }
+
+            .language-selector {
+                top: 12px;
+                right: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cultural symbols background -->
+    <div class="cultural-symbol" style="left: 5%; animation-delay: 0s;">☰</div>
+    <div class="cultural-symbol" style="left: 15%; animation-delay: 2s;">☱</div>
+    <div class="cultural-symbol" style="left: 25%; animation-delay: 4s;">☲</div>
+    <div class="cultural-symbol" style="left: 35%; animation-delay: 6s;">☳</div>
+    <div class="cultural-symbol" style="left: 45%; animation-delay: 8s;">☴</div>
+    <div class="cultural-symbol" style="left: 55%; animation-delay: 10s;">☵</div>
+    <div class="cultural-symbol" style="left: 65%; animation-delay: 12s;">☶</div>
+    <div class="cultural-symbol" style="left: 75%; animation-delay: 14s;">☷</div>
+    <div class="cultural-symbol" style="left: 85%; animation-delay: 16s;">金</div>
+    <div class="cultural-symbol" style="left: 95%; animation-delay: 18s;">木</div>
+    <div class="cultural-symbol" style="left: 7%; animation-delay: 20s;">水</div>
+    <div class="cultural-symbol" style="left: 17%; animation-delay: 22s;">火</div>
+    <div class="cultural-symbol" style="left: 27%; animation-delay: 24s;">土</div>
+    <div class="cultural-symbol" style="left: 37%; animation-delay: 26s;">龍</div>
+    <div class="cultural-symbol" style="left: 47%; animation-delay: 28s;">鳳</div>
+    <div class="cultural-symbol" style="left: 57%; animation-delay: 30s;">☯</div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar fixed w-full z-50 px-4 py-3">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="logo-font">EastForge</div>
+                <div class="logo-sub ml-3">東方護身符</div>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden lg:flex space-x-8 desktop-nav">
+                <a href="#system" class="hover:text-red-400 transition font-medium">AI系統</a>
+                <a href="#culture" class="hover:text-red-400 transition font-medium">護身符文化</a>
+                <a href="#talismans" class="hover:text-red-400 transition font-medium">產品系列</a>
+                <a href="#advantages" class="hover:text-red-400 transition font-medium">核心優勢</a>
+                <a href="#testimonials" class="hover:text-red-400 transition font-medium">用戶見證</a>
+            </div>
+            
+            <!-- Desktop Right -->
+            <div class="hidden lg:flex items-center space-x-4 desktop-nav">
+                <!-- Language Selector with Hong Kong flag -->
+                <div class="language-btn">
+                    <i class="fas fa-globe"></i>
+                    <span>香港</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <button id="loginBtn" class="btn-secondary px-6 py-2 rounded-full text-sm">登入</button>
+                <button class="btn-primary px-6 py-2 rounded-full text-sm">免費諮詢</button>
+            </div>
+            
+            <!-- Mobile Button -->
+            <div class="flex lg:hidden items-center">
+                <div class="language-btn mr-4">
+                    <i class="fas fa-globe"></i>
+                    <span>香港</span>
+                </div>
+                <button id="mobileMenuBtn" class="hamburger">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#system">AI系統</a>
+        <a href="#culture">護身符文化</a>
+        <a href="#talismans">產品系列</a>
+        <a href="#advantages">核心優勢</a>
+        <a href="#testimonials">用戶見證</a>
+        <a href="#" id="mobileLoginBtn">登入</a>
+        <a href="#">免費諮詢</a>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="login-modal">
+        <div class="login-content">
+            <span class="close-btn" id="closeLogin">&times;</span>
+            <h2 class="text-2xl font-bold mb-6 text-center gradient-text">登入 EastForge</h2>
+            
+            <div class="mb-6">
+                <h3 class="font-bold mb-4 text-center">社交媒體登入</h3>
+                <button class="social-login-btn bg-blue-600 text-white">
+                    <i class="fab fa-facebook mr-3"></i> Facebook 登入
+                </button>
+                <button class="social-login-btn bg-white text-gray-800">
+                    <i class="fab fa-google mr-3"></i> Google 登入
+                </button>
+                <button class="social-login-btn bg-black text-white">
+                    <i class="fab fa-apple mr-3"></i> Apple 登入
+                </button>
+                <button class="social-login-btn bg-blue-400 text-white">
+                    <i class="fab fa-twitter mr-3"></i> Twitter 登入
+                </button>
+            </div>
+            
+            <div>
+                <h3 class="font-bold mb-4 text-center">加密錢包</h3>
+                <button class="social-login-btn crypto-wallet">
+                    <i class="fab fa-ethereum mr-3 text-purple-400"></i> MetaMask
+                </button>
+                <button class="social-login-btn crypto-wallet">
+                    <i class="fab fa-bitcoin mr-3 text-orange-400"></i> Bitcoin 錢包
+                </button>
+                <button class="social-login-btn crypto-wallet">
+                    <i class="fas fa-wallet mr-3 text-blue-400"></i> WalletConnect
+                </button>
+            </div>
+            
+            <p class="text-center text-gray-400 mt-6 text-sm">
+                登入即表示您同意我們的服務條款和隱私政策
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="container mx-auto px-4 hero-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                        東方智慧<br>
+                        <span class="gradient-text">與現代創新的融合</span><br>
+                        五千年神秘學與AI智能的完美交匯
+                    </h1>
+                    <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                        體驗永恆東方智慧與尖端技術的革命性融合。我們的AI智者"Master Wong"以量子級精度分析超過250萬種材料組合，為您創造完美的能量增強解決方案。
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-12">
+                        <button class="btn-primary px-8 py-4 rounded-full text-lg font-semibold">
+                            <i class="fas fa-magic mr-2"></i>
+                            開始諮詢
+                        </button>
+                        <button class="btn-secondary px-8 py-4 rounded-full text-lg font-semibold">
+                            <i class="fas fa-play mr-2"></i>
+                            觀看演示
+                        </button>
+                    </div>
+                    
+                    <!-- Statistics -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="text-center">
+                            <div class="stats-number">250萬+</div>
+                            <div class="text-sm text-gray-400">材料組合</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="stats-number">500+</div>
+                            <div class="text-sm text-gray-400">傳統材料</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="stats-number">97%</div>
+                            <div class="text-sm text-gray-400">效果準確度</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="stats-number">5000</div>
+                            <div class="text-sm text-gray-400">年智慧傳承</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Featured Talisman Preview -->
+                <div class="relative">
+                    <div class="card p-8 text-center">
+                        <h3 class="text-2xl font-bold mb-6 gradient-text">精選護身符</h3>
+                        <div class="talisman-image">
+                            <div class="absolute inset-0 bg-gradient-to-br from-red-600 via-yellow-600 to-red-800 opacity-80"></div>
+                            <div class="relative z-10">
+                                <div class="text-6xl text-yellow-300 mb-2">財</div>
+                                <div class="absolute top-1/4 left-1/4 text-2xl text-red-300">五</div>
+                                <div class="absolute bottom-1/4 right-1/4 text-2xl text-yellow-300">路</div>
+                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl text-orange-200">☰</div>
+                            </div>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">五路財神護身符</h4>
+                        <p class="text-gray-400 mb-4">AI優化，專為招財納福和事業成功設計</p>
+                        <div class="flex justify-center space-x-2">
+                            <span class="px-3 py-1 bg-red-900 text-red-300 rounded-full text-sm">尊貴版</span>
+                            <span class="px-3 py-1 bg-yellow-900 text-yellow-300 rounded-full text-sm">金粉材質</span>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-yellow-400 font-bold">¥799</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Limited Time Offer Banner -->
+    <div class="urgency-banner py-4 text-center">
+        <div class="container mx-auto flex flex-col md:flex-row justify-center items-center">
+            <span class="text-white font-bold text-lg md:text-xl mb-2 md:mb-0 md:mr-4">
+                <i class="fas fa-bolt mr-2"></i>限時優惠：前100名客戶享85折 + 免費開光儀式
+            </span>
+            <button class="btn-primary px-6 py-2 rounded-full text-sm font-semibold">
+                立即領取 <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Consultation Simulation -->
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title center">Master Wong 諮詢演示</h2>
+            </div>
+            
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <strong>Master Wong</strong><br>
+                        歡迎！我是EastForge的AI護身符大師Master Wong。今天有什麼可以幫您？
+                    </div>
+                    <div class="message user-message">
+                        <strong>用戶</strong><br>
+                        我想增強事業運和財運
+                    </div>
+                    <div class="message bot-message">
+                        <strong>Master Wong</strong><br>
+                        絕佳的選擇！根據您的需求，我推薦事業與財富系列的護身符。請提供您的生辰信息？
+                    </div>
+                    <div class="message user-message">
+                        <strong>用戶</strong><br>
+                        我於1988年6月15日上午10:30在香港出生
+                    </div>
+                    <div class="message bot-message">
+                        <strong>Master Wong</strong><br>
+                        感謝。分析您的命盤...您的五行組合顯示金旺土弱。我推薦"事業加速護身符"搭配"五路財神護身符"。<br><br>
+                        ✓ 個人匹配度: 92%<br>
+                        ✓ 材料: 高級硃砂 + 22K金粉<br>
+                        ✓ 製作時間: 下週二黎明時分
+                    </div>
+                    <div class="message user-message">
+                        <strong>用戶</strong><br>
+                        聽起來完美！接下來我該怎麼做？
+                    </div>
+                    <div class="message bot-message">
+                        <strong>Master Wong</strong><br>
+                        只需在下方選擇護身符加入購物車。您想查看每個護身符的詳細信息嗎？<br><br>
+                        <div class="flex flex-wrap gap-4 mt-3">
+                            <div class="bg-gray-800 rounded-lg p-3 flex-1 min-w-[120px]">
+                                <div class="text-xl font-bold text-blue-400 mb-1">事業</div>
+                                <div class="text-sm">加速</div>
+                                <div class="text-yellow-400 font-bold mt-1">¥599</div>
+                            </div>
+                            <div class="bg-gray-800 rounded-lg p-3 flex-1 min-w-[120px]">
+                                <div class="text-xl font-bold text-yellow-400 mb-1">財富</div>
+                                <div class="text-sm">五路財神</div>
+                                <div class="text-yellow-400 font-bold mt-1">¥799</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="在此輸入您的訊息...">
+                    <button id="sendMessage">發送 <i class="fas fa-paper-plane ml-2"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Talisman Product Series -->
+    <section class="py-20" id="talismans">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title center">護身符系列</h2>
+                <p class="text-xl text-gray-300 max-w-4xl mx-auto">
+                    全面護身符解決方案，涵蓋您生活的方方面面
+                </p>
+            </div>
+            
+            <!-- Personal Fortune Enhancement Series -->
+            <div class="talisman-showcase mb-16">
+                <h3 class="text-3xl font-bold mb-8 gradient-text text-center">個人運勢增強系列 (50款護身符)</h3>
+                
+                <!-- Category Filters -->
+                <div class="category-filter">
+                    <button class="filter-btn active" data-filter="all">全部</button>
+                    <button class="filter-btn" data-filter="health">健康與活力</button>
+                    <button class="filter-btn" data-filter="protection">保護與安全</button>
+                    <button class="filter-btn" data-filter="wealth">財富與繁榮</button>
+                    <button class="filter-btn" data-filter="love">愛情與關係</button>
+                    <button class="filter-btn" data-filter="academic">學業與事業</button>
+                </div>
+                
+                <!-- Health & Vitality -->
+                <div class="mb-12 talisman-category" data-category="health">
+                    <h4 class="text-2xl font-bold mb-8 text-green-400 text-center">健康與活力 (10款護身符)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Medicine King Health Talisman -->
+                        <div class="talisman-card">
+                            <div class="talisman-image">
+                                <div class="absolute inset-0 bg-gradient-to-br from-green-600 via-emerald-600 to-teal-600 opacity-80"></div>
+                                <div class="relative z-10">
+                                    <div class="text-4xl text-green-300 mb-1">藥</div>
+                                    <div class="text-lg text-emerald-300">王健</div>
+                                </div>
+                            </div>
+                            <h5 class="font-bold text-lg mb-2">藥王健康護身符</h5>
+                            <p class="text-sm text-gray-400 mb-3">促進身體健康，驅除疾病</p>
+                            <div class="flex justify-center space-x-1">
+                                <span class="px-2 py-1 bg-green-900 text-green-300 rounded text-xs">健康</span>
+                                <span class="px-2 py-1 bg-emerald-900 text-emerald-300 rounded text-xs">活力</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-yellow-400 font-bold">¥699</span>
+                                <button class="btn-primary px-4 py-1 rounded-full text-xs ml-2">定制</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Longevity Talisman -->
+                        <div class="talisman-card">
+                            <div class="talisman-image">
+                                <div class="absolute inset-0 bg-gradient-to-br from-teal-600 via-cyan-600 to-blue-600 opacity-80"></div>
+                                <div class="relative z-10">
+                                    <div class="text-4xl text-teal-300 mb-1">壽</div>
+                                    <div class="text-lg text-cyan-300">延年</div>
+                                </div>
+                            </div>
+                            <h5 class="font-bold text-lg mb-2">長壽護身符</h5>
+                            <p class="text-sm text-gray-400 mb-3">延長壽命，促進長期健康</p>
+                            <div class="flex justify-center space-x-1">
+                                <span class="px-2 py-1 bg-teal-900 text-teal-300 rounded text-xs">長壽</span>
+                                <span class="px-2 py-1 bg-cyan-900 text-cyan-300 rounded text-xs">耐力</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-yellow-400 font-bold">¥799</span>
+                                <button class="btn-primary px-4 py-1 rounded-full text-xs ml-2">定制</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Vital Energy Talisman -->
+                        <div class="talisman-card">
+                            <div class="talisman-image">
+                                <div class="absolute inset-0 bg-gradient-to-br from-yellow-600 via-orange-600 to-red-600 opacity-80"></div>
+                                <div class="relative z-10">
+                                    <div class="text-4xl text-yellow-300 mb-1">氣</div>
+                                    <div class="text-lg text-orange-300">活力</div>
+                                </div>
+                            </div>
+                            <h5 class="font-bold text-lg mb-2">元氣護身符</h5>
+                            <p class="text-sm text-gray-400 mb-3">提升能量水平，對抗疲勞</p>
+                            <div class="flex justify-center space-x-1">
+                                <span class="px-2 py-1 bg-yellow-900 text-yellow-300 rounded text-xs">能量</span>
+                                <span class="px-2 py-1 bg-orange-900 text-orange-300 rounded text-xs">活力</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-yellow-400 font-bold">¥649</span>
+                                <button class="btn-primary px-4 py-1 rounded-full text-xs ml-2">定制</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Wellness Harmony Talisman -->
+                        <div class="talisman-card">
+                            <div class="talisman-image">
+                                <div class="absolute inset-0 bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 opacity-80"></div>
+                                <div class="relative z-10">
+                                    <div class="text-4xl text-purple-300 mb-1">和</div>
+                                    <div class="text-lg text-indigo-300">康諧</div>
+                                </div>
+                            </div>
+                            <h5 class="font-bold text-lg mb-2">健康和諧護身符</h5>
+                            <p class="text-sm text-gray-400 mb-3">平衡身心，實現整體健康</p>
+                            <div class="flex justify-center space-x-1">
+                                <span class="px-2 py-1 bg-purple-900 text-purple-300 rounded text-xs">平衡</span>
+                                <span class="px-2 py-1 bg-indigo-900 text-indigo-300 rounded text-xs">和諧</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-yellow-400 font-bold">¥749</span>
+                                <button class="btn-primary px-4 py-1 rounded-full text-xs ml-2">定制</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Protection & Safety -->
+                <div class="mb-12 talisman-category" data-category="protection">
+                    <h4 class="text-2xl font-bold mb-8 text-blue-400 text-center">保護與安全 (15款護身符)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Peace Guardian Talisman -->
+                        <div class="talisman-card">
+                            <div class="talisman-image">
+                                <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-sky-600 opacity-80"></div>
+                                <div class="relative z-10">
+                                    <div class="text-4xl text-blue-300 mb-1">護</div>
+                                    <div class="text-lg text-cyan-300">平安</div>
+                                </div>
+                            </div>
+                            <h5 class="font-bold text-lg mb-2">平安守護護身符</h5>
+                            <p class="text-sm text-gray-400 mb-3">確保旅途和日常生活的安全</p>
+                            <div class="flex justify-center space-x-1">
+                                <span class="px-2 py-1 bg-blue-900 text-blue-300 rounded text-xs">安全</span>
+                                <span class="px-2 py-1 bg-cyan-900 text-cyan-300 rounded text-xs">旅行</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-yellow-400 font-bold">¥629</span>
+                                <button class="btn-primary px-4 py-1 rounded-full text-xs ml-2">定制</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Evil Ward Talisman -->
+                        <div class="talisman-card">
+                            <div class="talisman-image">
+                                <div class="absolute inset-0 bg-gradient-to-br from-red-600 via-orange-600 to-amber-600 opacity-80"></div>
+                                <div class="relative z-10">
+                                    <div class="text-4xl text-red-300 mb-1">鎮</div>
+                                    <div class="text-lg text-orange-300">宅邪</div>
+                                </div>
+                            </div>
+                            <h5 class="font-bold text-lg mb-2">辟邪護身符</h5>
+                            <p class="text-sm text-gray-400 mb-3">保護家庭免受負能量侵擾</p>
+                            <div class="flex justify-center space-x-1">
+                                <span class="px-2 py-1 bg-red-900 text-red-300 rounded text-xs">保護</span>
+                                <span class="px-2 py-1 bg-orange-900 text-orange-300 rounded text-xs">家庭</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-yellow-400 font-bold">¥929</span>
+                                <button class="btn-primary px-4 py-1 rounded-full text-xs ml-2">定制</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Wealth & Prosperity -->
+                <div class="mb-12 talisman-category" data-category="wealth">
+                    <h4 class="text-2xl font-bold mb-8 text-yellow-400 text-center">財富與繁榮 (10款護身符)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Five Paths Wealth God Talisman -->
+                        <div class="talisman-card">
+                            <div class="talisman-image">
+                                <div class="absolute inset-0 bg-gradient-to-br from-yellow-600 via-amber-600 to-orange-600 opacity-80"></div>
+                                <div class="relative z-10">
+                                    <div class="text-4xl text-yellow-300 mb-1">財</div>
+                                    <div class="text-lg text-amber-300">五路</div>
+                                </div>
+                            </div>
+                            <h5 class="font-bold text-lg mb-2">五路財神護身符</h5>
+                            <p class="text-sm text-gray-400 mb-3">吸引八方財富</p>
+                            <div class="flex justify-center space-x-1">
+                                <span class="px-2 py-1 bg-yellow-900 text-yellow-300 rounded text-xs">財富</span>
+                                <span class="px-2 py-1 bg-amber-900 text-amber-300 rounded text-xs">繁榮</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-yellow-400 font-bold">¥799</span>
+                                <button class="btn-primary px-4 py-1 rounded-full text-xs ml-2">定制</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Business Success Talisman -->
+                        <div class="talisman-card">
+                            <div class="talisman-image">
+                                <div class="absolute inset-0 bg-gradient-to-br from-green-600 via-emerald-600 to-teal-600 opacity-80"></div>
+                                <div class="relative z-10">
+                                    <div class="text-4xl text-green-300 mb-1">商</div>
+                                    <div class="text-lg text-emerald-300">業成</div>
+                                </div>
+                            </div>
+                            <h5 class="font-bold text-lg mb-2">事業成功護身符</h5>
+                            <p class="text-sm text-gray-400 mb-3">增強商業機會和成長</p>
+                            <div class="flex justify-center space-x-1">
+                                <span class="px-2 py-1 bg-green-900 text-green-300 rounded text-xs">事業</span>
+                                <span class="px-2 py-1 bg-emerald-900 text-emerald-300 rounded text-xs">成功</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-yellow-400 font-bold">¥969</span>
+                                <button class="btn-primary px-4 py-1 rounded-full text-xs ml-2">定制</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Love & Relationships -->
+                <div class="mb-12 talisman-category" data-category="love">
+                    <h4 class="text-2xl font-bold mb-8 text-pink-400 text-center">愛情與關係 (10款護身符)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Twin Flame Harmony Talisman -->
+                        <div class="talisman-card">
+                            <div class="talisman-image">
+                                <div class="absolute inset-0 bg-gradient-to-br from-pink-600 via-rose-600 to-fuchsia-600 opacity-80"></div>
+                                <div class="relative z-10">
+                                    <div class="text-4xl text-pink-300 mb-1">愛</div>
+                                    <div class="text-lg text-rose-300">雙諧</div>
+                                </div>
+                            </div>
+                            <h5 class="font-bold text-lg mb-2">雙生火焰和諧護身符</h5>
+                            <p class="text-sm text-gray-400 mb-3">吸引並和諧靈魂伴侶關係</p>
+                            <div class="flex justify-center space-x-1">
+                                <span class="px-2 py-1 bg-pink-900 text-pink-300 rounded text-xs">愛情</span>
+                                <span class="px-2 py-1 bg-rose-900 text-rose-300 rounded text-xs">和諧</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-yellow-400 font-bold">¥779</span>
+                                <button class="btn-primary px-4 py-1 rounded-full text-xs ml-2">定制</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Academic & Career -->
+                <div class="mb-12 talisman-category" data-category="academic">
+                    <h4 class="text-2xl font-bold mb-8 text-blue-400 text-center">學業與事業 (5款護身符)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Wisdom Accumulation Talisman -->
+                        <div class="talisman-card">
+                            <div class="talisman-image">
+                                <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 opacity-80"></div>
+                                <div class="relative z-10">
+                                    <div class="text-4xl text-blue-300 mb-1">智</div>
+                                    <div class="text-lg text-indigo-300">慧積</div>
+                                </div>
+                            </div>
+                            <h5 class="font-bold text-lg mb-2">智慧積累護身符</h5>
+                            <p class="text-sm text-gray-400 mb-3">增強學習和知識記憶能力</p>
+                            <div class="flex justify-center space-x-1">
+                                <span class="px-2 py-1 bg-blue-900 text-blue-300 rounded text-xs">智慧</span>
+                                <span class="px-2 py-1 bg-indigo-900 text-indigo-300 rounded text-xs">學習</span>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-yellow-400 font-bold">¥779</span>
+                                <button class="btn-primary px-4 py-1 rounded-full text-xs ml-2">定制</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Family Energy Enhancement Series -->
+            <div class="talisman-showcase mb-16">
+                <h3 class="text-3xl font-bold mb-8 gradient-text text-center">家庭能量增強系列 (20款護身符)</h3>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Home Harmony -->
+                    <div>
+                        <h4 class="text-2xl font-bold mb-6 text-pink-400 text-center">家庭和諧 (10款護身符)</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-center bg-gray-800 bg-opacity-50 rounded-lg p-4">
+                                <div class="w-16 h-16 rounded-lg bg-gradient-to-br from-pink-600 to-red-600 flex items-center justify-center mr-4">
+                                    <span class="text-xl text-white">家</span>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold">家庭和諧護身符</h5>
+                                    <p class="text-sm text-gray-400 mb-3">促進家庭內部的和平與團結</p>
+                                    <div class="mt-1">
+                                        <span class="text-yellow-400 font-bold">¥999</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Home Feng Shui -->
+                    <div>
+                        <h4 class="text-2xl font-bold mb-6 text-orange-400 text-center">家居風水 (10款護身符)</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-center bg-gray-800 bg-opacity-50 rounded-lg p-4">
+                                <div class="w-16 h-16 rounded-lg bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center mr-4">
+                                    <span class="text-xl text-white">全</span>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold">全家和諧護身符</h5>
+                                    <p class="text-sm text-gray-400 mb-3">平衡整個家庭的能量</p>
+                                    <div class="mt-1">
+                                        <span class="text-yellow-400 font-bold">¥1,279</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Clan Protection Series -->
+            <div class="talisman-showcase">
+                <h3 class="text-3xl font-bold mb-8 gradient-text text-center">宗族保護系列 (15款護身符)</h3>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Ancestral Protection -->
+                    <div>
+                        <h4 class="text-xl font-bold mb-6 text-purple-400 text-center">祖先祝福 (5款護身符)</h4>
+                        <div class="space-y-3">
+                            <div class="bg-gray-800 bg-opacity-50 rounded-lg p-3 text-center">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-violet-600 flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-lg text-white">祖</span>
+                                </div>
+                                <h6 class="font-bold text-sm">祖先祝福護身符</h6>
+                                <p class="text-xs text-gray-400">祖先對後代的庇護</p>
+                                <div class="mt-2">
+                                    <span class="text-yellow-400 font-bold text-sm">¥1,059</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Clan Unity -->
+                    <div>
+                        <h4 class="text-xl font-bold mb-6 text-orange-400 text-center">宗族團結 (5款護身符)</h4>
+                        <div class="space-y-3">
+                            <div class="bg-gray-800 bg-opacity-50 rounded-lg p-3 text-center">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-lg text-white">族</span>
+                                </div>
+                                <h6 class="font-bold text-sm">宗族團結護身符</h6>
+                                <p class="text-xs text-gray-400">加強家族凝聚力</p>
+                                <div class="mt-2">
+                                    <span class="text-yellow-400 font-bold text-sm">¥999</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Generational Protection -->
+                    <div>
+                        <h4 class="text-xl font-bold mb-6 text-green-400 text-center">世代保護 (5款護身符)</h4>
+                        <div class="space-y-3">
+                            <div class="bg-gray-800 bg-opacity-50 rounded-lg p-3 text-center">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-lg text-white">後</span>
+                                </div>
+                                <h6 class="font-bold text-sm">後代繁榮護身符</h6>
+                                <p class="text-xs text-gray-400">確保後代子孫的繁榮</p>
+                                <div class="mt-2">
+                                    <span class="text-yellow-400 font-bold text-sm">¥1,279</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Advantages -->
+    <section class="py-20 bg-gray-900 bg-opacity-50" id="advantages">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title center">核心優勢</h2>
+                <p class="text-xl text-gray-300 max-w-4xl mx-auto">
+                    EastForge提供前所未有的運勢增強體驗，擁有獨特的技術創新、文化傳承和質量保證
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Technical Innovation -->
+                <div class="advantage-card">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 rounded-full mystic-gradient flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-microchip text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold gradient-text">AI優化</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-bold text-white mb-1">全球首個AI驅動系統</h4>
+                                <p class="text-sm text-gray-400">AI技術優化傳統護身符製作</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-bold text-white mb-1">250萬+材料組合</h4>
+                                <p class="text-sm text-gray-400">大數據分析找到最佳材料匹配</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cultural Heritage -->
+                <div class="advantage-card">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 rounded-full mystic-gradient flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-yin-yang text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold gradient-text">正宗傳承</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-bold text-white mb-1">5000年道教傳統</h4>
+                                <p class="text-sm text-gray-400">遵循古法，尊重文化精髓</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-bold text-white mb-1">85款經典護身符</h4>
+                                <p class="text-sm text-gray-400">涵蓋所有運勢增強需求</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Premium Quality -->
+                <div class="advantage-card">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 rounded-full mystic-gradient flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-gem text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold gradient-text">頂級品質</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-bold text-white mb-1">500+天然材料</h4>
+                                <p class="text-sm text-gray-400">精選硃砂、金粉、桃木</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-bold text-white mb-1">嚴格質量控制</h4>
+                                <p class="text-sm text-gray-400">每件護身符經過多重檢驗</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Testimonials -->
+    <section class="py-20" id="testimonials">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title center">用戶成功故事</h2>
+                <p class="text-xl text-gray-300 max-w-4xl mx-auto">
+                    我們尊貴客戶的真實轉變體驗
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="card p-6 testimonial-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-red-600 to-yellow-600 flex items-center justify-center text-xl mr-4 text-white font-bold">
+                            L
+                        </div>
+                        <div>
+                            <h4 class="font-bold">李先生 | 科技CEO</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        "使用事業加速護身符後，我在兩個月內簽下了三份重大合約。AI優化確實有效——我們的收入增長了40%！"
+                    </p>
+                    <div class="text-sm text-red-400">#事業成功 #業務增長</div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="card p-6 testimonial-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-pink-600 to-purple-600 flex items-center justify-center text-xl mr-4 text-white font-bold">
+                            C
+                        </div>
+                        <div>
+                            <h4 class="font-bold">陳女士 | 房地產</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        "財神護身符改變了我的事業。激活後的第一季度，我完成了價值2000萬港元的交易。能量驚人！"
+                    </p>
+                    <div class="text-sm text-red-400">#財富 #房地產</div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="card p-6 testimonial-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-green-600 to-blue-600 flex items-center justify-center text-xl mr-4 text-white font-bold">
+                            W
+                        </div>
+                        <div>
+                            <h4 class="font-bold">黃先生 | 投資者</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        "採用EastForge的建議後，我的投資組合在六個月內增長了65%。五路財神護身符物超所值！"
+                    </p>
+                    <div class="text-sm text-red-400">#投資 #財富增長</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-20 bg-gradient-to-r from-red-900 via-yellow-900 to-red-900">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-6">
+                開啟您的<span class="gradient-text">運勢之旅</span>
+            </h2>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto mb-10">
+                加入數千名成功人士的行列，通過EastForge AI優化系統增強您的人生運勢。立即開始個性化諮詢。
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
+                <button class="btn-primary px-10 py-4 rounded-full text-lg font-semibold">
+                    <i class="fas fa-calendar-check mr-2"></i>
+                    開始諮詢
+                </button>
+                <button class="btn-secondary px-10 py-4 rounded-full text-lg font-semibold">
+                    <i class="fas fa-phone mr-2"></i>
+                    聯繫專家
+                </button>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                <div class="bg-black bg-opacity-30 rounded-lg p-6">
+                    <i class="fas fa-envelope text-2xl text-yellow-400 mb-3"></i>
+                    <h4 class="font-bold mb-2">電子郵件</h4>
+                    <p class="text-gray-300">contact@eastforge.me</p>
+                    <p class="text-sm text-gray-400">專業團隊快速響應</p>
+                </div>
+                
+                <div class="bg-black bg-opacity-30 rounded-lg p-6">
+                    <i class="fab fa-weixin text-2xl text-yellow-400 mb-3"></i>
+                    <h4 class="font-bold mb-2">微信</h4>
+                    <p class="text-gray-300">EastForge_Official</p>
+                    <p class="text-sm text-gray-400">掃碼即時諮詢</p>
+                </div>
+                
+                <div class="bg-black bg-opacity-30 rounded-lg p-6">
+                    <i class="fas fa-map-marker-alt text-2xl text-yellow-400 mb-3"></i>
+                    <h4 class="font-bold mb-2">地址</h4>
+                    <p class="text-gray-300">黃大仙竹園道2號</p>
+                    <p class="text-sm text-gray-400">香港九龍</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-gray-900 border-t border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="logo-font text-2xl mb-4">EastForge</div>
+                    <div class="logo-sub mb-4">東方護身符</div>
+                    <p class="text-gray-400 mb-4">
+                        古代智慧與計算精度的完美結合，通過AI優化重新定義傳統護身符的有效性和應用。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-telegram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-discord text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">護身符服務</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#talismans" class="text-gray-400 hover:text-red-400 transition">個人運勢</a></li>
+                        <li><a href="#talismans" class="text-gray-400 hover:text-red-400 transition">家庭和諧</a></li>
+                        <li><a href="#talismans" class="text-gray-400 hover:text-red-400 transition">宗族保護</a></li>
+                        <li><a href="#system" class="text-gray-400 hover:text-red-400 transition">AI優化</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">護身符類別</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-red-400 transition">財富與事業</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-red-400 transition">愛情與婚姻</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-red-400 transition">健康與安全</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-red-400 transition">學業成功</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">聯繫信息</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2"></i>
+                            <span>黃大仙竹園道2號, 香港九龍</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope mt-1 mr-2"></i>
+                            <span>contact@eastforge.me</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fab fa-weixin mt-1 mr-2"></i>
+                            <span>EastForge_Official</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-4">
+                        <h5 class="text-sm font-bold mb-2">付款方式</h5>
+                        <div class="flex space-x-2">
+                            <div class="w-8 h-8 bg-orange-600 rounded flex items-center justify-center">
+                                <i class="fab fa-bitcoin text-white text-sm"></i>
+                            </div>
+                            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                                <i class="fab fa-ethereum text-white text-sm"></i>
+                            </div>
+                            <div class="w-8 h-8 bg-green-600 rounded flex items-center justify-center">
+                                <i class="fas fa-dollar-sign text-white text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-500 mb-4 md:mb-0">
+                        © 2025 EastForge東方護身符科技有限公司。保留所有權利。
+                    </p>
+                    <div class="flex space-x-6 text-sm">
+                        <a href="#" class="text-gray-400 hover:text-white transition">服務條款</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">隱私政策</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">聯繫我們</a>
+                    </div>
+                </div>
+                
+                <!-- Disclaimer -->
+                <div class="mt-6 pt-6 border-t border-gray-800">
+                    <p class="text-xs text-gray-500 text-center leading-relaxed">
+                        免責聲明：EastForge提供的服務僅用於精神慰藉和文化傳承目的，不構成任何投資、醫療或法律建議。個人運勢增強效果因人而異，我們不保證特定結果。請理性看待護身符文化，特殊需求請諮詢相關專業人士。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    document.getElementById('mobileMenu').classList.remove('active');
+                }
+            });
+        });
+        
+        // Login modal functionality
+        const loginBtn = document.getElementById('loginBtn');
+        const mobileLoginBtn = document.getElementById('mobileLoginBtn');
+        const loginModal = document.getElementById('loginModal');
+        const closeLogin = document.getElementById('closeLogin');
+        
+        loginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+        
+        mobileLoginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('mobileMenu').classList.remove('active');
+        });
+        
+        closeLogin.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Page load animation
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+            
+            // Category filtering
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const talismanCategories = document.querySelectorAll('.talisman-category');
+            
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+                    
+                    const filter = btn.getAttribute('data-filter');
+                    
+                    talismanCategories.forEach(category => {
+                        if (filter === 'all' || category.getAttribute('data-category') === filter) {
+                            category.style.display = 'block';
+                        } else {
+                            category.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Chat simulation
+            const chatMessages = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+            const sendMessageBtn = document.getElementById('sendMessage');
+            
+            sendMessageBtn.addEventListener('click', () => {
+                if (chatInput.value.trim() !== '') {
+                    // Add user message
+                    const userMsg = document.createElement('div');
+                    userMsg.className = 'message user-message';
+                    userMsg.innerHTML = `<strong>用戶</strong><br>${chatInput.value}`;
+                    chatMessages.appendChild(userMsg);
+                    
+                    // Clear input
+                    chatInput.value = '';
+                    
+                    // Scroll to bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // Simulate bot response after delay
+                    setTimeout(() => {
+                        const botMsg = document.createElement('div');
+                        botMsg.className = 'message bot-message';
+                        botMsg.innerHTML = `<strong>Master Wong</strong><br>感謝您的訊息。我們的AI護身符大師正在分析您的請求，將很快提供個性化推薦。`;
+                        chatMessages.appendChild(botMsg);
+                        
+                        // Scroll to bottom
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 1000);
+                }
+            });
+            
+            // Enter key to send message
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessageBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
